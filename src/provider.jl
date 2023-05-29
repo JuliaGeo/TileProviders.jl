@@ -86,7 +86,15 @@ function geturl(provider::AbstractProvider, x::Integer, y::Integer, z::Integer)
             push!(replacements, string('{', key, '}') => string(val))
         end
     end
-    return replace(url(provider), replacements...)
+    if VERSION < v"1.7"
+        result_url = url(provider)
+        for replacement in replacements
+            result_url = replace(result_url, replacement)
+        end
+        return result_url
+    else
+        return replace(url(provider), replacements...)
+    end
 end
 
 function _access(d)
